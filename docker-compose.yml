@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  signal-cli-rest-api:
+    image: bbernhard/signal-cli-rest-api:latest
+    container_name: signal-cli-rest-api
+    ports:
+      - "8080:8080"
+    environment:
+      - SIGNAL_CLI_CONFIG_DIR=/signal-cli-config
+      - SIGNAL_CLI_UID=1000
+      - SIGNAL_CLI_GID=1000
+    volumes:
+      - signal-cli-config:/signal-cli-config
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  signal-cli-config:
+    driver: local
